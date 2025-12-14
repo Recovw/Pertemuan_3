@@ -1,0 +1,150 @@
+A. PENJELASAN FILE ROUTE (routes/web.php)
+
+File ini ibarat "Dapur" atau "Otak" website. Di sini kita mengolah data mentah sebelum disajikan ke pengguna.
+
+JANGAN LUPA Ketika kalian ingin memperlihatkan website kalian, dan muncul 404 not found. itu masalahnya berada di url kalian, di http://127.0.0.1:8000/ akan muncul secara default, sedangkan di file web.php isinya:
+
+Route::get('/belajar-php', function () {
+     -- isi kode --
+});
+
+Nah, disini kan sudah set urlnya jadi /belajar-php, pastikan di website kalian tulis seperti ini, http://127.0.0.1:8000/belajar-php sesuai dengan nama url yang kalian isi. bebas bisa tulis url kalian apa saja tidak harus mengikuti ini.
+
+
+1. Di baris declare(strict_types=1);
+Nah apa itu kegunaanya? kegunaanya itu untuk fitur keamanan PHP untuk mevalidasi tipe data, jadi analoginya seperti memaksa PHP menjadi "Galak". Kalau kita buat fungsi yang minta angka (Integer), tapi kita masukkan huruf (String), PHP akan langsung error. Tanpa ini, PHP akan mencoba menebak-nebak (yang bisa bikin bug).
+
+ini wajib ditaruh di baris paling atas file.
+
+2. Membuat Rumus:
+
+Kita membuat 2 jenis function di luar route agar bisa dipanggil:
+
+function hitungTotal(float $harga, int $jumlah) : float
+{
+  return $harga * $jumlah;
+}
+
+ada tulisan : float di belakangnya, artinya function ini berjanji akan mengembalikan hasil berupa angka decimal, cara kerja functionnya itu kita kasih Harga & Jumlah -> function menghitung hasil totalnya -> mengembalikan hasil totalnya. 
+Dan return hasil totalnya menggunakan $harga * $jumlah yang sudah dikasih.
+
+
+function diskonMember(float &$totalBelanja) 
+{
+  $totalBelanja = $totalBelanja * 0.9;
+}
+
+di parameter function itu kan ada &, itu Namanya adalah pass by reference, biasanya kalau variable masuk ke fungsi, yang akan masuk itu "foto-kopi nya" variable, aslinya di luar tidak berubah. 
+
+Tapi dengan tanda &, kita memasukkan "Dokumen aslinya". jadi kalau di dalam fungsinya nilainya di-diskon (di kurangin), variable asli di luar juga ikut berubah otomatis.
+
+3. Variable & Tipe Data
+
+Di dalam Route::get('/belajar-php', function()...) itu kita membuat beberapa variable:
+$nama = Tipe String (Teks), wajib pakai kutip.
+$umur = Tipe Integer (Angka bulat), bisa untuk hitung-hitungan.
+$ipk = Tipe Float (Angka desimal/koma).
+$is_member = Tipe Boolean (Hanya bernilai Benar/Salah). Dipakai untuk logika If-Else.
+$hobi = Tipe Array (Laci). Satu variabel tapi isinya banyak data.
+
+4. Mengirim Data ke View
+
+Perintah return view('latihan', [...]); itu seperti cara kurir mengantar makanan, kita membungkus semua variable tadi ($nama, $umur, ...) ke dalam paket (Array) untuk dikirim ke file tampilan kita yaitu Latihan.blade.php
+
+B. PENJELASAN FILE TAMPILAN
+
+File ini ibaratnya "Piring penyajian", isinya HTML bercampur kode khusus Laravel (Blade) untuk menampilkan data.
+
+1. Menampilkan variable $nama
+
+Di line 14-21 itu kan ada tanda kurung kurawal ganda {{...}} ini adalah cara untuk mencetak isi variable PHP ke layer HTML.
+
+jadi perintah dari PHP bisa kita gunakan di dalam HTML
+
+<p><strong>Nama:</strong> {{ $nama }}</p>
+<p><strong>Umur:</strong> {{ $umur }}</p>
+<p><strong>IPK:</strong> {{ $ipk }}</p>
+
+jadi disini kita tinggal panggil nama variable kita menggunakan {{...}} seperti diatas.
+
+2. Logika Selection (if, elseif, else)
+
+Di line 28-36 itu kan ada selection menggunakan statement if, elseif, dan else kan. kode @if ($status) itu return true artinya "jika status itu true maka anda adalah member", dan menampilkan kotak hijau. 
+
+Lalu @else itu jika return false artinya "jika status itu false maka anda bukan member", dan menampilkan kotak merah.
+
+3. Logika Switch Case (@switch)
+
+switch case ini digunakan untuk predikat IPK, kenapa pakai switch? karena kemungkinannya banyak (Cumlaude, Sangat Baik, Cukup, dll) kalau pake statement if, elseif, dan else malahan kodenya jadi Panjang.
+
+4. Logika Repetition/Looping (@Foreach)
+
+untuk menampilkan daftar hobi user, kita bia menggunakan foreach untuk memperlihatkan hobi-hobi user. 
+
+Cara kerjanya itu seperti sebuah laci, jadi untuk setiap (@foreach) barang yang ada di laci $hobi, ambil satu barang, lalu sebut dia $item, lalu akan ditampilkan.
+
+Kalau hobi user ada 3, maka otomatis bikin 3 line. Kalau ada 100 hobi, maka akan otomatis membuat 100 line.
+
+5.Logika For Loop (@for)
+
+Nah for loop itu cara bacanya itu seperti ini:
+
+for (int $i = 5; $i > 0; $i--)
+
+Loop akan dimulai dari int $i = 5 menetapkan nilai awal variable $i adalah 5.
+
+Dan Kondisi untuk looping adalah jika $i > 0, jadi loop akan terus berjalan selama nilai $i lebih besar dari 0.
+
+Setiap kali 1 loop selesai, nilai $i akan dikurangi 1 karena ada $i--.
+
+Jadi alur kerja loop seperti ini:
+
+Mulai: $i adalah 5. Apakah 5 > 0? (Ya/True).
+
+    Aksi: Cetak angka 5 dalam badge.
+
+    Ubah: $i dikurangi 1 menjadi 4.
+
+Cek lagi: Apakah 4 > 0? (Ya/True).
+
+    Aksi: Cetak angka 4 dalam badge.
+
+    Ubah: $i dikurangi 1 menjadi 3.
+
+Lanjut terus... sampai $i menjadi 1.
+
+Putaran Terakhir: $i adalah 1. Apakah 1 > 0? (Ya/True).
+
+    Aksi: Cetak angka 1 dalam badge.
+
+    Ubah: $i dikurangi 1 menjadi 0.
+
+Berhenti: Apakah 0 > 0? (Tidak/False). Loop berhenti di sini
+
+Dan akan menampilkan di Latihan.blade.php
+
+
+Dan pada baris <h3>Rp {{ number_format($total, 0, ',', '.') }}</h3> 
+
+
+itu adalah function bawaan PHP (Built in function) yang sangat berguna untuk format uang, kita bedah 4 komponen di dalamnya:
+
+$total
+
+ini adalah variable yang dikirim dari route, nilainya adalah hasil akhir setelah dipotong diskon oleh fungsi diskonMember yg kita sudah buat web.php.
+
+2. 0 (jumlah decimal)
+
+kita aturnya agar tidak ada angka di belakang koma, kalau diganti jadi 2 maka hasilnya jadi 9.000.000,00.
+
+3. ',' (pemisah decimal)
+
+karakter yang dipakai untuk memisahkan angka decimal, karena di Indonesia pakai koma.
+
+4. '.' (Pemisah Ribuan)
+
+Karakter yang dipakai setiap 3 digit angka (ribuan), ini akan mengubah angka 9000000 menjadi 9.000.000 jadi ada titiknya agar mudah dibaca.
+
+
+Kurang lebih itu penjelasan untuk file blade.php, kalau kalian ada pertanyaan bisa chat saya di line ya. Makasih 
+
